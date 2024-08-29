@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, ChangeEvent, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';  // Import useRouter
 
 interface FormState {
   username: string;
@@ -29,7 +30,8 @@ export default function RegisterPage() {
     password: '',
   });
 
-  // Debounce function to limit the number of API calls
+  const router = useRouter();  // Initialize useRouter
+
   const debounce = (func: (...args: any[]) => void, delay: number) => {
     let timeout: NodeJS.Timeout;
     return (...args: any[]) => {
@@ -122,6 +124,12 @@ export default function RegisterPage() {
         setMessage(data.error || 'An error occurred');
         return;
       }
+
+      // Store username in localStorage
+      localStorage.setItem('username', form.username);
+
+      // Redirect to home page
+      router.push('/');
 
       setMessage('User registered successfully!');
       setForm({ username: '', email: '', password: '', confirmPassword: '' });
