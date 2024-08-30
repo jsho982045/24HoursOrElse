@@ -1,6 +1,7 @@
+// src/app/profile/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BackButton from '../../components/BackButton';
@@ -9,8 +10,8 @@ interface UserProfile {
   username: string;
   email: string;
   avatarUrl?: string;
-  submissions?: string[];  // Mark submissions as optional
-  ranking?: number;        // Placeholder for ranking data
+  submissions?: string[];
+  ranking?: number;
 }
 
 export default function ProfilePage() {
@@ -19,13 +20,13 @@ export default function ProfilePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const storedUsername = localStorage.getItem('username');
-      if (!storedUsername) {
-        router.push('/signin');
-        return;
-      }
+    const storedUsername = sessionStorage.getItem('username');
+    if (!storedUsername) {
+      router.push('/signin');
+      return;
+    }
 
+    const fetchUserData = async () => {
       try {
         const res = await fetch(`/api/profile?username=${storedUsername}`, {
           method: 'GET',
@@ -61,13 +62,12 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-        <BackButton />
+      <BackButton />
       <h2 className="text-2xl font-bold mb-4">Profile</h2>
-      
-      {/* Avatar */}
+
       <div className="flex items-center mb-4">
         <Image
-          src={user.avatarUrl || '/default-avatar.PNG'} // Default avatar if none is provided
+          src={user.avatarUrl || '/default-avatar.PNG'}
           alt="User Avatar"
           width={100}
           height={100}
