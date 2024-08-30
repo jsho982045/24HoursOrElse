@@ -1,11 +1,10 @@
-// src/app/api/profile/route.js
 import dbConnect from '../../../../lib/mongodb';
 import User from '../../../../models/User';
+import Submission from '../../../../models/Submission'; // Ensure correct path
 
 export async function GET(req) {
   await dbConnect();
 
-  // Assuming the username is passed as a query parameter
   const { searchParams } = new URL(req.url);
   const username = searchParams.get('username');
 
@@ -17,7 +16,8 @@ export async function GET(req) {
   }
 
   try {
-    const user = await User.findOne({ username }).select('-password'); // Exclude password field
+    // Find the user by username
+    const user = await User.findOne({ username }).select('-password');
 
     if (!user) {
       return new Response(
@@ -26,8 +26,17 @@ export async function GET(req) {
       );
     }
 
+    // Find submissions by the user's username
+    const submissions = await Submission.find({ submittedBy: username });
+
+    // Combine user data and submissions
+    const userDataWithSubmissions = {
+      ...user.toObject(),
+      submissions, // Add fetched submissions to user data
+    };
+
     return new Response(
-      JSON.stringify(user),
+      JSON.stringify(userDataWithSubmissions),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {

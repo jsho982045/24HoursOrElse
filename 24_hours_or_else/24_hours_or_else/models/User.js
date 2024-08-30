@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Please provide a password'],
     minlength: [6, 'Password must be at least 6 characters long'],
   },
+  submissions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Submission',  // Reference to the Submission model
+  }],
 }, {
   timestamps: true,
 });

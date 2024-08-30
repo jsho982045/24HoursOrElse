@@ -32,6 +32,7 @@ export default function SubmissionsPage() {
         }
 
         const data = await res.json();
+        console.log('Fetched Submissions:', data);
         setSubmissions(data);
       } catch (error) {
         console.error('Error fetching submissions:', error);
