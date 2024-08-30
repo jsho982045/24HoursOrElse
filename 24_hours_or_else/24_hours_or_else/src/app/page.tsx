@@ -7,16 +7,14 @@ export default function Home() {
   const [username, setUsername] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Check if the user is logged in by looking for the username in localStorage
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
+    const storedUsername = sessionStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
     }
 
-    // Function to clear localStorage on exit
     const handleBeforeUnload = () => {
-      localStorage.removeItem('username');
+      sessionStorage.removeItem('username');
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -26,16 +24,14 @@ export default function Home() {
     };
   }, []);
 
-  // Handle sign out
   const handleSignOut = () => {
-    localStorage.removeItem('username'); // Clear username from localStorage
-    setUsername(null); // Update state
-    setDropdownOpen(false); // Close dropdown
+    sessionStorage.removeItem('username');
+    setUsername(null);
+    setDropdownOpen(false);
   };
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      {/* Navigation Bar */}
       <nav className="w-full fixed top-0 left-0 bg-white shadow-md">
         <div className="container mx-auto flex justify-between items-center py-4 px-6">
           <div className="flex items-center space-x-6">
@@ -74,7 +70,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <div className="mt-24 text-center">
         <h1 className="text-4xl font-bold mb-4 text-gray-800">Welcome to 24HoursOrElse</h1>
         <p className="text-lg text-gray-600">Complete a new programming challenge every day!</p>

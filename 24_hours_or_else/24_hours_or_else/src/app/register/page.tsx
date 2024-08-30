@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback, ChangeEvent, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';  // Import useRouter
+import { useRouter } from 'next/navigation'; 
+import BackButton from '../../components/BackButton';
 
 interface FormState {
   username: string;
@@ -141,6 +142,7 @@ export default function RegisterPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <BackButton />
       <h2 className="text-2xl font-bold mb-4">Register</h2>
       {message && <p className="mb-4 text-red-500">{message}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">

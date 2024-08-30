@@ -1,23 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import BackButton from '../../components/BackButton';
 
 export default function SignInPage() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
-  const router = useRouter(); // Hook for navigation
+  const router = useRouter();
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       const res = await fetch('/api/signin', {
-        method: 'POST', // Ensure the method is POST
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -25,18 +26,18 @@ export default function SignInPage() {
       });
 
       const data = await res.json();
-      
+      console.log('API Response:', data);  // Debug: Log API response
+
       if (!res.ok) {
         setMessage(data.error || 'An error occurred');
         return;
       }
 
+      // Store username in sessionStorage
+      sessionStorage.setItem('username', data.username);
       setMessage('Signed in successfully!');
 
-      // Store username in localStorage/sessionStorage or any global state (e.g., Context, Redux)
-      localStorage.setItem('username', data.username); // Example using localStorage
-
-      // Redirect to the homepage
+      // Redirect to home page
       router.push('/');
     } catch (error) {
       console.error('Error signing in:', error);
@@ -46,6 +47,7 @@ export default function SignInPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+        <BackButton />
       <h2 className="text-2xl font-bold mb-4">Sign In</h2>
       {message && <p className="mb-4 text-red-500">{message}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
