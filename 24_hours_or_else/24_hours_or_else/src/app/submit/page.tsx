@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import BackButton from '../../components/BackButton';
 
 export default function SubmitPage() {
   const [form, setForm] = useState({ projectName: '', description: '', projectLink: '', file: null });
   const [uploadMethod, setUploadMethod] = useState('link'); // Default method is 'link'
   const [message, setMessage] = useState('');
+  const router = useRouter(); // Initialize router
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,7 +29,6 @@ export default function SubmitPage() {
       return;
     }
 
-    // Handle submission based on the selected upload method
     try {
       const res = await fetch('/api/submissions', {
         method: 'POST',
@@ -38,7 +39,7 @@ export default function SubmitPage() {
       });
 
       const data = await res.json();
-      
+
       if (!res.ok) {
         setMessage(data.error || 'An error occurred while submitting the project.');
         return;
@@ -46,6 +47,9 @@ export default function SubmitPage() {
 
       setMessage('Project submitted successfully!');
       setForm({ projectName: '', description: '', projectLink: '', file: null });
+
+      // Redirect to submissions page after successful submission
+      router.push('/submissions');
     } catch (error) {
       console.error('Error submitting project:', error);
       setMessage('An error occurred while submitting the project.');
@@ -54,7 +58,7 @@ export default function SubmitPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-        <BackButton />
+      <BackButton />
       <h2 className="text-2xl font-bold mb-4">Submit Your Project</h2>
       {message && <p className="mb-4 text-red-500">{message}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
